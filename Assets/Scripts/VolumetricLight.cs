@@ -28,12 +28,11 @@
 
 
 using UnityEngine;
-using System.Collections;
 using UnityEngine.Rendering;
 using System;
 
 [RequireComponent(typeof(Light))]
-public class VolumetricLight : MonoBehaviour 
+public class VolumetricLight : MonoBehaviour
 {
     public event Action<VolumetricLightRenderer, VolumetricLight, CommandBuffer, Matrix4x4> CustomRenderEvent;
 
@@ -62,12 +61,12 @@ public class VolumetricLight : MonoBehaviour
     public float NoiseIntensityOffset = 0.3f;
     public Vector2 NoiseVelocity = new Vector2(3.0f, 3.0f);
 
-    [Tooltip("")]    
-    public float MaxRayLength = 400.0f;    
+    [Tooltip("")]
+    public float MaxRayLength = 400.0f;
 
     public Light Light { get { return _light; } }
     public Material VolumetricMaterial { get { return _material; } }
-    
+
     private Vector4[] _frustumCorners = new Vector4[4];
 
     private bool _reversedZ = false;
@@ -75,7 +74,7 @@ public class VolumetricLight : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    void Start() 
+    void Start()
     {
 #if UNITY_5_5_OR_NEWER
         if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Direct3D11 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.Direct3D12 ||
@@ -95,11 +94,11 @@ public class VolumetricLight : MonoBehaviour
 
         _light = GetComponent<Light>();
         //_light.RemoveAllCommandBuffers();
-        if(_light.type == LightType.Directional)
+        if (_light.type == LightType.Directional)
         {
             _light.AddCommandBuffer(LightEvent.BeforeScreenspaceMask, _commandBuffer);
             _light.AddCommandBuffer(LightEvent.AfterShadowMap, _cascadeShadowCommandBuffer);
-                
+
         }
         else
             _light.AddCommandBuffer(LightEvent.AfterShadowMap, _commandBuffer);
@@ -130,7 +129,7 @@ public class VolumetricLight : MonoBehaviour
     /// 
     /// </summary>
     public void OnDestroy()
-    {        
+    {
         Destroy(_material);
     }
 
@@ -160,7 +159,7 @@ public class VolumetricLight : MonoBehaviour
         _material.SetVector("_VolumetricLight", new Vector4(ScatteringCoef, ExtinctionCoef, _light.range, 1.0f - SkyboxExtinctionCoef));
 
         _material.SetTexture("_CameraDepthTexture", renderer.GetVolumeLightDepthBuffer());
-        
+
         //if (renderer.Resolution == VolumetricLightRenderer.VolumtericResolution.Full)
         {
             //_material.SetFloat("_ZTest", (int)UnityEngine.Rendering.CompareFunction.LessEqual);
@@ -168,7 +167,7 @@ public class VolumetricLight : MonoBehaviour
         }
         //else
         {
-            _material.SetFloat("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Always);            
+            _material.SetFloat("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Always);
             // downsampled light buffer can't use native zbuffer for ztest, try to perform ztest in pixel shader to avoid ray marching for occulded geometry 
             //_material.EnableKeyword("MANUAL_ZTEST");
         }
@@ -184,11 +183,11 @@ public class VolumetricLight : MonoBehaviour
             _material.DisableKeyword("HEIGHT_FOG");
         }
 
-        if(_light.type == LightType.Point)
+        if (_light.type == LightType.Point)
         {
             SetupPointLight(renderer, viewProj);
         }
-        else if(_light.type == LightType.Spot)
+        else if (_light.type == LightType.Spot)
         {
             SetupSpotLight(renderer, viewProj);
         }
@@ -197,7 +196,7 @@ public class VolumetricLight : MonoBehaviour
             SetupDirectionalLight(renderer, viewProj);
         }
     }
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -214,7 +213,7 @@ public class VolumetricLight : MonoBehaviour
         _material.SetPass(pass);
 
         Mesh mesh = VolumetricLightRenderer.GetPointLightMesh();
-        
+
         float scale = _light.range * 2.0f;
         Matrix4x4 world = Matrix4x4.TRS(transform.position, _light.transform.rotation, new Vector3(scale, scale, scale));
 
@@ -241,7 +240,7 @@ public class VolumetricLight : MonoBehaviour
 
             _material.EnableKeyword("POINT_COOKIE");
             _material.DisableKeyword("POINT");
-            
+
             _material.SetTexture("_LightTexture0", _light.cookie);
         }
 
@@ -258,13 +257,13 @@ public class VolumetricLight : MonoBehaviour
             _commandBuffer.DrawMesh(mesh, world, _material, 0, pass);
 
             if (CustomRenderEvent != null)
-                CustomRenderEvent(renderer, this, _commandBuffer, viewProj);            
+                CustomRenderEvent(renderer, this, _commandBuffer, viewProj);
         }
         else
         {
             _material.DisableKeyword("SHADOWS_CUBE");
             renderer.GlobalCommandBuffer.DrawMesh(mesh, world, _material, 0, pass);
-            
+
             if (CustomRenderEvent != null)
                 CustomRenderEvent(renderer, this, renderer.GlobalCommandBuffer, viewProj);
         }
@@ -282,11 +281,11 @@ public class VolumetricLight : MonoBehaviour
         int pass = 1;
         if (!IsCameraInSpotLightBounds())
         {
-            pass = 3;     
+            pass = 3;
         }
 
         Mesh mesh = VolumetricLightRenderer.GetSpotLightMesh();
-                
+
         float scale = _light.range;
         float angleScale = Mathf.Tan((_light.spotAngle + 1) * 0.5f * Mathf.Deg2Rad) * _light.range;
 
@@ -312,7 +311,7 @@ public class VolumetricLight : MonoBehaviour
         float d = -Vector3.Dot(center, axis);
 
         // update material
-        _material.SetFloat("_PlaneD", d);        
+        _material.SetFloat("_PlaneD", d);
         _material.SetFloat("_CosAngle", Mathf.Cos((_light.spotAngle + 1) * 0.5f * Mathf.Deg2Rad));
 
         _material.SetVector("_ConeApex", new Vector4(apex.x, apex.y, apex.z));
@@ -342,7 +341,7 @@ public class VolumetricLight : MonoBehaviour
         {
             clip = Matrix4x4.TRS(new Vector3(0.5f, 0.5f, 0.5f), Quaternion.identity, new Vector3(0.5f, 0.5f, 0.5f));
 
-            if(_reversedZ)
+            if (_reversedZ)
                 proj = Matrix4x4.Perspective(_light.spotAngle, 1, _light.range, _light.shadowNearPlane);
             else
                 proj = Matrix4x4.Perspective(_light.spotAngle, 1, _light.shadowNearPlane, _light.range);
@@ -364,7 +363,7 @@ public class VolumetricLight : MonoBehaviour
             _commandBuffer.DrawMesh(mesh, world, _material, 0, pass);
 
             if (CustomRenderEvent != null)
-                CustomRenderEvent(renderer, this, _commandBuffer, viewProj);       
+                CustomRenderEvent(renderer, this, _commandBuffer, viewProj);
         }
         else
         {
@@ -388,7 +387,7 @@ public class VolumetricLight : MonoBehaviour
         int pass = 4;
 
         _material.SetPass(pass);
-        
+
         if (Noise)
             _material.EnableKeyword("NOISE");
         else
@@ -433,7 +432,7 @@ public class VolumetricLight : MonoBehaviour
         Texture nullTexture = null;
         if (_light.shadows != LightShadows.None)
         {
-            _material.EnableKeyword("SHADOWS_DEPTH");            
+            _material.EnableKeyword("SHADOWS_DEPTH");
             _commandBuffer.Blit(nullTexture, renderer.GetVolumeLightBuffer(), _material, pass);
 
             if (CustomRenderEvent != null)
@@ -476,7 +475,7 @@ public class VolumetricLight : MonoBehaviour
 
         // check angle
         float cosAngle = Vector3.Dot(transform.forward, (Camera.current.transform.position - _light.transform.position).normalized);
-        if((Mathf.Acos(cosAngle) * Mathf.Rad2Deg) > (_light.spotAngle + 3) * 0.5f)
+        if ((Mathf.Acos(cosAngle) * Mathf.Rad2Deg) > (_light.spotAngle + 3) * 0.5f)
             return false;
 
         return true;

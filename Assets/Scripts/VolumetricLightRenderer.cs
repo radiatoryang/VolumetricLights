@@ -28,7 +28,6 @@
 
 
 using UnityEngine;
-using System.Collections;
 using UnityEngine.Rendering;
 using System;
 
@@ -196,7 +195,7 @@ public class VolumetricLightRenderer : MonoBehaviour
     void OnEnable()
     {
         //_camera.RemoveAllCommandBuffers();
-        if(_camera.actualRenderingPath == RenderingPath.Forward)
+        if (_camera.actualRenderingPath == RenderingPath.Forward)
             _camera.AddCommandBuffer(CameraEvent.AfterDepthTexture, _preLightPass);
         else
             _camera.AddCommandBuffer(CameraEvent.BeforeLighting, _preLightPass);
@@ -208,7 +207,7 @@ public class VolumetricLightRenderer : MonoBehaviour
     void OnDisable()
     {
         //_camera.RemoveAllCommandBuffers();
-        if(_camera.actualRenderingPath == RenderingPath.Forward)
+        if (_camera.actualRenderingPath == RenderingPath.Forward)
             _camera.RemoveCommandBuffer(CameraEvent.AfterDepthTexture, _preLightPass);
         else
             _camera.RemoveCommandBuffer(CameraEvent.BeforeLighting, _preLightPass);
@@ -344,10 +343,10 @@ public class VolumetricLightRenderer : MonoBehaviour
 
             // horizontal bilateral blur at half res
             Graphics.Blit(_halfVolumeLightTexture, temp, _bilateralBlurMaterial, 2);
-            
+
             // vertical bilateral blur at half res
             Graphics.Blit(temp, _halfVolumeLightTexture, _bilateralBlurMaterial, 3);
-            
+
             // upscale to full res
             Graphics.Blit(_halfVolumeLightTexture, _volumeLightTexture, _bilateralBlurMaterial, 5);
             RenderTexture.ReleaseTemporary(temp);
@@ -363,7 +362,7 @@ public class VolumetricLightRenderer : MonoBehaviour
             Graphics.Blit(temp, _volumeLightTexture, _bilateralBlurMaterial, 1);
             RenderTexture.ReleaseTemporary(temp);
         }
-        
+
         // add volume light buffer to rendered scene
         _blitAddMaterial.SetTexture("_Source", source);
         Graphics.Blit(_volumeLightTexture, destination, _blitAddMaterial, 0);
