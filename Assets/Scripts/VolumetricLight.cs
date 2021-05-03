@@ -74,7 +74,7 @@ public class VolumetricLight : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    void Start()
+    private void Start()
     {
 #if UNITY_5_5_OR_NEWER
         if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Direct3D11 || SystemInfo.graphicsDeviceType == GraphicsDeviceType.Direct3D12 ||
@@ -112,7 +112,7 @@ public class VolumetricLight : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    void OnEnable()
+    private void OnEnable()
     {
         VolumetricLightRenderer.PreRenderEvent += VolumetricLightRenderer_PreRenderEvent;
     }
@@ -120,7 +120,7 @@ public class VolumetricLight : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    void OnDisable()
+    private void OnDisable()
     {
         VolumetricLightRenderer.PreRenderEvent -= VolumetricLightRenderer_PreRenderEvent;
     }
@@ -183,17 +183,18 @@ public class VolumetricLight : MonoBehaviour
             _material.DisableKeyword("HEIGHT_FOG");
         }
 
-        if (_light.type == LightType.Point)
+        switch (_light.type)
         {
-            SetupPointLight(renderer, viewProj);
-        }
-        else if (_light.type == LightType.Spot)
-        {
-            SetupSpotLight(renderer, viewProj);
-        }
-        else if (_light.type == LightType.Directional)
-        {
-            SetupDirectionalLight(renderer, viewProj);
+            case LightType.Point:
+                SetupPointLight(renderer, viewProj);
+                break;
+            case LightType.Spot:
+                SetupSpotLight(renderer, viewProj);
+                break;
+            case LightType.Directional:
+                SetupDirectionalLight(renderer, viewProj);
+                break;
+
         }
     }
 
