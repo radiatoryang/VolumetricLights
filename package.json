@@ -1,0 +1,16 @@
+{
+  "name": "com.radiatoryang.volumetric",
+  "displayName": "Volumetric Lights",
+  "version": "1.0.0",
+  "description": "Volumetric light / sun shafts postprocessing effect for built-in 3D pipeline.",
+  "unity": "2020.1",
+  "keywords": [ "lighting", "light", "sun", "sunshaft", "volumetric", "fog", "art", "built-in", "environment" ],
+  "documentationUrl": "https://github.com/radiatoryang/VolumetricLights",
+  "licensesUrl": "https://github.com/radiatoryang/VolumetricLights/LICENSE",
+  "author": {
+    "name": "Robert Yang",
+    "email": "2285943+radiatoryang@users.noreply.github.com",
+    "url": "https://debacle.us"
+  },
+  "type": "tool"
+}

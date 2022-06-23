@@ -81,7 +81,9 @@ Shader "Hidden/BlitAdd"
 #endif
 				float4 source = tex2D(_Source, i.texcoord);
 
-				source *= main.w;
+				// original was "source *= main.w"
+				// but I think that darkens too much of the original screen image
+				// source *= 0.69f + 0.31f * main.w;
 				source.xyz += main.xyz;
 				return source;
 			}

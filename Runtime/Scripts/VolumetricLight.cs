@@ -45,7 +45,7 @@ public class VolumetricLight : MonoBehaviour
     public int SampleCount = 8;
     [Range(0.0f, 1.0f)]
     public float ScatteringCoef = 0.5f;
-    [Range(0.0f, 0.1f)]
+    [Range(0.0f, 0.5f)]
     public float ExtinctionCoef = 0.01f;
     [Range(0.0f, 1.0f)]
     public float SkyboxExtinctionCoef = 0.9f;
